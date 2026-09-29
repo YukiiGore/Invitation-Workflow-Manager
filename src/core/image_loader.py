@@ -1,21 +1,21 @@
 from pathlib import Path
 
+from core.paths import ensure_folder
+from core.sorting import sort_naturally
+
 
 class ImageLoader:
     def __init__(self, folder_path: Path):
         self.folder_path = folder_path
 
     def load_images(self) -> list[Path]:
-        if not self.folder_path.exists():
-            raise FileNotFoundError(
-                f"Folder '{self.folder_path}' does not exist."
-            )
-
-        if not self.folder_path.is_dir():
+        if self.folder_path.exists() and not self.folder_path.is_dir():
             raise NotADirectoryError(
                 f"'{self.folder_path}' is not a folder."
             )
 
-        images = sorted(self.folder_path.glob("*.png"))
+        ensure_folder(self.folder_path)
+
+        images = sort_naturally(self.folder_path.glob("*.png"))
 
         return images

@@ -9,5 +9,8 @@ class TemplateEngine:
         return self.template_path.read_text(encoding="utf-8")
 
     def render_template(self, username: str) -> str:
-        template = self.load_template()
+        return self.render(self.load_template(), username)
+
+    @staticmethod
+    def render(template: str, username: str) -> str:
         return template.replace("{username}", username)
