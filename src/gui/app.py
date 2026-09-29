@@ -1,9 +1,9 @@
 import sys
 
-from PySide6.QtGui import QPalette
+from PySide6.QtGui import QIcon, QPalette
 from PySide6.QtWidgets import QApplication
 
-from core.paths import IMAGES_FOLDER, ensure_folder, template_path
+from core.paths import IMAGES_FOLDER, ensure_folder, icon_path, template_path
 from gui.main_window import APP_TITLE, MainWindow
 from gui.theme import (
     BACKGROUND,
@@ -33,9 +33,28 @@ def _apply_dark_palette(app: QApplication) -> None:
     app.setStyleSheet(STYLESHEET)
 
 
+def _apply_icon(app: QApplication, window: MainWindow) -> bool:
+    """Set the app and window icon. Returns False when no icon was found."""
+    path = icon_path()
+
+    if path is None:
+        return False
+
+    icon = QIcon(str(path))
+
+    if icon.isNull():
+        return False
+
+    app.setWindowIcon(icon)
+    window.setWindowIcon(icon)
+
+    return True
+
+
 def run() -> int:
     app = QApplication(sys.argv)
     app.setApplicationName(APP_TITLE)
+    app.setApplicationDisplayName(APP_TITLE)
 
     if not template_path().exists():
         print(f"Template not found at '{template_path()}'.", file=sys.stderr)
@@ -45,5 +64,8 @@ def run() -> int:
 
     window = MainWindow(default_folder=ensure_folder(IMAGES_FOLDER))
     window.show()
+
+    if not _apply_icon(app, window):
+        print("App icon not found; continuing without one.", file=sys.stderr)
 
     return app.exec()

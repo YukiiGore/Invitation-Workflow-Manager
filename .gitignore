@@ -9,6 +9,7 @@ __pycache__/
 # Build
 build/
 dist/
+*.spec
 
 # Local runtime data
 templates/config.json
